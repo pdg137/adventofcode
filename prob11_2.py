@@ -10,7 +10,7 @@ col_empty = array('B', [True]*140)
 row_empty = array('B', [True]*140)
 
 display.fill(0)
-display.text(f"Expanding...", 0,10)
+display.text(f"Expanding...", 0,0)
 display.show()
 
 for y, line in enumerate(f):
@@ -23,8 +23,8 @@ for y, line in enumerate(f):
 # now get all the galaxies' coordinates, expanding
 sleep_ms(100)
 display.fill(0)
-display.text(f"Expanding...", 0,10)
-display.text(f"Locating...", 0,20)
+display.text(f"Expanding...", 0,0)
+display.text(f"Locating...", 0,10)
 display.show()
 f = open('data11.txt', 'r')
 galaxies = []
@@ -42,9 +42,9 @@ for y, line in enumerate(f):
         
 sleep_ms(100)
 display.fill(0)
-display.text(f"Expanding...", 0,10)
-display.text(f"Locating...", 0,20)
-display.text(f"Galaxies: {len(galaxies)}",0, 30)
+display.text(f"Expanding...", 0,0)
+display.text(f"Locating...", 0,10)
+display.text(f"Galaxies: {len(galaxies)}",0, 20)
 display.show()
 sleep_ms(500)
 
@@ -57,9 +57,9 @@ for i, g1 in enumerate(galaxies):
         total += abs(g2[0] - g1[0]) + abs(g2[1] - g1[1])
 
     display.fill(0)
-    display.text(f"Expanding...", 0,10)
-    display.text(f"Locating...", 0,20)
-    display.text(f"Galaxies: {len(galaxies)}",0, 30)
+    display.text(f"Expanding...", 0,00)
+    display.text(f"Locating...", 0,10)
+    display.text(f"Galaxies: {len(galaxies)}",0, 20)
     display.text(f"Galaxy {i+1}",0, 40)
     display.text(f"T: {total//2}",0, 50)
     display.show()
