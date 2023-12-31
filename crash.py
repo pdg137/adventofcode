@@ -1,0 +1,2 @@
+import re
+re.match('[ab]*[cb][cb][cb][cb][ab]+[cb][ab]+[cb][ab]+[cb][ab]+[cb][cb][cb][cb][ab]+[cb][ab]+[cb][ab]+[cb][ab]+[cb][cb][cb][cb][ab]+[cb][ab]+[cb][ab]+[cb][ab]+[cb][cb][cb][cb][ab]+[cb][ab]+[cb][ab]+[cb][ab]+[cb][cb][cb][cb][ab]+[cb][ab]+[cb][ab]+[cb][ab]*$','cbbbbbbabbabbbbcbbbbbbabbabbbbcbbbbbbabbabbbbcbbbbbbabbabbbbcbbbbbbabbabbb')
