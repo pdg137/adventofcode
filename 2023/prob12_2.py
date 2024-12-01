@@ -1,7 +1,15 @@
-from zumo_2040_robot.display import Display
-from time import ticks_us, sleep_ms
+#from zumo_2040_robot.display import Display
+#from time import ticks_us, sleep_ms
 from array import array
 import re
+
+class Display:
+    def text(self, s, x, y):
+        print(s)
+    def show(self):
+        pass
+    def fill(self, i):
+        pass
 
 display = Display()
 
