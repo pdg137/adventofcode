@@ -6,14 +6,8 @@ File.open('data01.txt').each do |line|
   a2 << $2.to_i
 end
 
-a1.sort!
-a2.sort!
-
-sum = 0
-a1.each do |i|
-  d = a2.select { |a| a == i }.length
-  puts d
-  sum += d * i
+total = a1.each.sum do |x|
+  x * a2.grep(x).length
 end
 
-puts sum
+puts total

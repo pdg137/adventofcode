@@ -9,11 +9,8 @@ end
 a1.sort!
 a2.sort!
 
-sum = 0
-a1.length.times do |i|
-  d = (a1[i] - a2[i]).abs
-  puts d
-  sum += d
+total = a1.each_index.sum do |i|
+  (a1[i] - a2[i]).abs
 end
 
-puts sum
+puts total
