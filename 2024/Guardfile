@@ -1,0 +1,14 @@
+guard :shell do
+  watch(/.rb$/) do |m|
+    puts "Running #{m[0]}:"
+    system("ruby #{m[0]}")
+  end
+  watch(/data(\d\d).txt$/) do |m|
+    puts "Running prob#{m[1]}_1.rb:"
+    system("ruby prob#{m[1]}_1.rb")
+
+    puts
+    puts "Running prob#{m[1]}_2.rb:"
+    system("ruby prob#{m[1]}_2.rb")
+  end
+end
