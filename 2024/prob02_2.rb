@@ -1,11 +1,9 @@
-module Enumerable
-  def safe?
-    diffs = (length-1).times.collect { |i|
-      self[i+1] - self[i]
-    }
+safe = lambda do |a|
+  diffs = (a.length-1).times.collect { |i|
+    a[i+1] - a[i]
+  }
 
-    diffs.all?(1..3) || diffs.all?(-3..-1)
-  end
+  diffs.all?(1..3) || diffs.all?(-3..-1)
 end
 
 score = File.open('data02.txt').count do |line|
@@ -15,7 +13,7 @@ score = File.open('data02.txt').count do |line|
     a.dup.tap { |a2| a2.delete_at(i) }
   end
 
-  sequences.any? &:safe?
+  sequences.any? safe
 end
 
 puts score
