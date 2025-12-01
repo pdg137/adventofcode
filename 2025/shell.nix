@@ -1,0 +1,41 @@
+let
+  # Change to this if you want to use your configured channel
+  #  nixpkgs = <nixpkgs>;
+
+  # nixos-25.11 from 2025-11-30:
+  nixpkgs = fetchTarball {
+    name = "nixpkgs";
+    url = "https://github.com/NixOS/nixpkgs/archive/d542db7.tar.gz";
+    sha256 = "0x6wjmpzxrrlmwwq8v3znpyr1qs5m1vf9bdgwwlq0lr5fl8l4v67";
+  };
+
+  pkgs = import nixpkgs {};
+
+in
+
+  pkgs.stdenvNoCC.mkDerivation {
+    name = "shell";
+    dontUnpack = "true";
+    buildInputs = [
+      pkgs.emacs
+    ];
+
+    # prevent nixpkgs from being garbage-collected
+    inherit nixpkgs;
+
+    builder = builtins.toFile "builder.sh" ''
+      source $stdenv/setup
+      eval $shellHook
+
+      {
+        echo "#!$SHELL"
+        for var in PATH SHELL nixpkgs
+        do echo "declare -x $var=\"''${!var}\""
+        done
+        echo "declare -x PS1='\n\033[1;32m[nix-shell:\w]\$\033[0m '"
+        echo "exec \"$SHELL\" --norc --noprofile \"\$@\""
+      } > "$out"
+
+      chmod a+x "$out"
+    '';
+  }
