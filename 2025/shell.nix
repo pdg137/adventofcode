@@ -17,7 +17,8 @@ in
     name = "shell";
     dontUnpack = "true";
     buildInputs = [
-      pkgs.emacs
+      pkgs.emacs-nox
+      pkgs.php
     ];
 
     # prevent nixpkgs from being garbage-collected
