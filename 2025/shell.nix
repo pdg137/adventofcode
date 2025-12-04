@@ -19,6 +19,7 @@ in
     buildInputs = [
       pkgs.emacs-nox
       pkgs.php
+      pkgs.octave
     ];
 
     # prevent nixpkgs from being garbage-collected
