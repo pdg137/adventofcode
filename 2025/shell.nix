@@ -11,6 +11,11 @@ let
 
   pkgs = import nixpkgs {};
 
+  gwbasic = pkgs.fetchzip {
+    url = "https://web.archive.org/web/20091027064135/http://www.geocities.com/KindlyRat/GWBASIC.EXE.zip";
+    sha256 = "sha256-aN+xJ9FA897fI0O1ZtZ/Ih/0O2Ze1BmtWudH3pIkH2o=";
+  };
+
 in
 
   pkgs.stdenvNoCC.mkDerivation {
@@ -20,10 +25,13 @@ in
       pkgs.emacs-nox
       pkgs.php
       pkgs.octave
+      pkgs.dosbox-x
     ];
 
     # prevent nixpkgs from being garbage-collected
     inherit nixpkgs;
+
+    inherit gwbasic;
 
     builder = builtins.toFile "builder.sh" ''
       source $stdenv/setup
@@ -31,7 +39,7 @@ in
 
       {
         echo "#!$SHELL"
-        for var in PATH SHELL nixpkgs
+        for var in PATH SHELL nixpkgs gwbasic
         do echo "declare -x $var=\"''${!var}\""
         done
         echo "declare -x PS1='\n\033[1;32m[nix-shell:\w]\$\033[0m '"
