@@ -32,15 +32,20 @@
 290 REM calculate!
 300 T=0
 310 PRINT "Calculating..."
-320 FOR Y = 1 TO H-2
-330     PRINT Y
-340     FOR X = 1 TO W-2
-350         C = A%(X-1,Y) + A%(X,Y-1) + A%(X+1,Y) + A%(X,Y+1)
-360         C = C + A%(X-1,Y-1) + A%(X+1,Y-1) + A%(X+1,Y+1) + A%(X-1,Y+1)
-370         IF A%(X,Y) AND C > -4 THEN T = T+1
-380     NEXT X
-390 NEXT Y
+320 REMOVED = 1
+330 WHILE REMOVED > 0
+340     REMOVED = 0 : REM we'll be done if we don't find any
+350     FOR Y = 1 TO H-2
+360         PRINT Y
+370         FOR X = 1 TO W-2
+380             C = A%(X-1,Y) + A%(X,Y-1) + A%(X+1,Y) + A%(X,Y+1)
+390             C = C + A%(X-1,Y-1) + A%(X+1,Y-1) + A%(X+1,Y+1) + A%(X-1,Y+1)
+400             IF A%(X,Y) AND C > -4 THEN T = T+1 : A%(X,Y)=0 : REMOVED = REMOVED+1
+410         NEXT X
+420     NEXT Y
+430     PRINT "Removed " REMOVED
+440 WEND
 
-400 PRINT "Final sum:", T
-410 INPUT "PRESS ANY KEY...", I
-420 SYSTEM
+450 PRINT "Final sum:", T
+460 INPUT "PRESS ANY KEY...", I
+470 SYSTEM
