@@ -1,15 +1,34 @@
 \newlinechar=`\^^J
 \message{^^J^^J}
 
+% Since TeX does not support 64-bit numeric values, we need to use
+% string comparison. Hereare helpers to zero-pad strings to 20 digits.
+% https://tex.stackexchange.com/questions/501660/how-to-count-number-of-digits-in-an-integer-or-letters-in-a-word-and-then-retr
+\def\fullyexpand#1{\romannumeral - `0#1}
+%\def\fullyexpand#1{\edef\fetemp{#1}\fetemp}
+
+\def\zCountDigits#1{%
+  \number\numexpr0\expandafter\zCountDigitsAux#1\zCountDigitsEnd\relax
+}
+\def\zCountDigitsAux#1{%
+  \ifx\zCountDigitsEnd#1\else+1\expandafter\zCountDigitsAux\fi
+}
+\def\zCountDigitsEnd{\zCountDigitsEnd}
+
+% this craziness allows \pad to work with a macro or literal
+\def\dopad#1\relax{\ifnum\zCountDigits{#1}<20 \pad{0#1}\else#1\fi}
+\def\pad#1{\expandafter\dopad#1\relax}
+
 \newread\file
 \openin\file=data05.txt
 
 % test for ranges
-\count0=0
 \def\checkinrange#1#2{
-  \ifnum\count1<#1
+  \count1=\pdfstrcmp{\subject}{#1}
+  \ifnum\count1<0
   \else
-    \ifnum\count1>#2
+    \count1=\pdfstrcmp{\subject}{#2}
+    \ifnum\count1>0
     \else
       \advance\count0 by 1
     \fi
@@ -21,11 +40,12 @@
   \message{new range #1 to #2^^J}
   \expandafter\def\expandafter\ranges\expandafter{\ranges\checkinrange{#1}{#2}}
 }
-\def\split#1-#2 {\newrange{#1}{#2}} % the space is important!
+\def\split#1-#2 {\newrange{\pad{#1 }}{\pad{#2 }}} % the space is important!
 \def\mysplit#1{\expandafter\split#1\relax}
 
 \def\ifinranges#1{
-  \count1=#1
+  \def\subject{\pad{#1}}
+  \message{\subject}
   \ranges
   \ifnum\count0>0
 }
@@ -58,7 +78,6 @@
 \nloop
   \read\file to\num
   \ifisnum\num
-    \message{\num}
     \checknum{\num}
   \fi
   \ifeof\file
