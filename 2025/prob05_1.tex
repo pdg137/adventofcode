@@ -4,12 +4,31 @@
 \newread\file
 \openin\file=data05.txt
 
-\def\ranges{}
-\def\newrange#1#2{
-  \edef\ranges{\ranges,#1+#2}
+% test for ranges
+\count0=0
+\def\checkinrange#1#2{
+  \ifnum\count1<#1
+  \else
+    \ifnum\count1>#2
+    \else
+      \advance\count0 by 1
+    \fi
+  \fi
 }
-\def\split#1-#2{\newrange{#1}{#2}}
+
+\def\ranges{\count0=0}
+\def\newrange#1#2{
+  \message{new range #1 to #2^^J}
+  \expandafter\def\expandafter\ranges\expandafter{\ranges\checkinrange{#1}{#2}}
+}
+\def\split#1-#2 {\newrange{#1}{#2}} % the space is important!
 \def\mysplit#1{\expandafter\split#1\relax}
+
+\def\ifinranges#1{
+  \count1=#1
+  \ranges
+  \ifnum\count0>0
+}
 
 \message{Parsing fresh ranges...^^J}
 
@@ -28,22 +47,25 @@
   \ifcat\par\fileline % if the line is blank
 \repeat
 
-\message{Got these: \ranges^^J}
 \message{Parsing available ingredients...^^J}
+
+\count2=0
+\def\checknum#1{
+  \ifinranges{#1}\message{fresh^^J}\advance\count2 by 1\else\message{^^J}\fi
+}
 
 % read to end
 \nloop
   \read\file to\num
   \ifisnum\num
     \message{\num}
-    \ifnum\num<3\message{true}\fi
+    \checknum{\num}
   \fi
   \ifeof\file
 \repeat
 
 \closein\file
 
-
-\message{^^J^^J}
+\message{Sum: \the\count2^^J^^J}
 
 \end
