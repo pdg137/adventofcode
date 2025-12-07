@@ -1,0 +1,39 @@
+\message{Hello, world!}
+
+\newread\file
+\openin\file=data05.txt
+
+\def\split#1-#2\relax{\message{#1+#2}}
+\def\mysplit#1{\expandafter\split#1\relax}
+
+% negative version of loop to read lines from a file
+% (is it really this hard?)
+\def\nloop#1\repeat{\def\body{#1}\niterate}
+\def\niterate{\body \let\next\relax \else\let\next\niterate\fi \next}
+\let\repeat=\fi % this makes \loop...\if...\repeat skippable
+
+% read to blank line
+\def\ifblank{\ifcat\par\fileline}
+\def\ifisnum#1{\ifcat1#1}
+\nloop
+  \read\file to\fileline
+  \ifisnum\fileline\message{\fileline}\fi
+  \ifblank
+\repeat
+
+\message{nums}
+
+% read to end
+\def\ifblank{\ifcat\par\fileline}
+\nloop
+  \read\file to\num
+  \ifisnum\num
+    \message{\num}
+    \ifnum\num<3\message{true}\fi
+  \fi
+  \ifeof\file
+\repeat
+
+\closein\file
+
+\end

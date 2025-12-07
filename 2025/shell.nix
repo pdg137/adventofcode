@@ -25,7 +25,8 @@ in
       pkgs.emacs-nox
       pkgs.php
       pkgs.octave
-      pkgs.dosbox-x
+      pkgs.dosbox-x # for running GW-BASIC
+      pkgs.texliveMinimal
     ];
 
     # prevent nixpkgs from being garbage-collected
