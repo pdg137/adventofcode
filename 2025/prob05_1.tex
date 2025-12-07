@@ -1,30 +1,37 @@
-\message{Hello, world!}
+\newlinechar=`\^^J
+\message{^^J^^J}
 
 \newread\file
 \openin\file=data05.txt
 
-\def\split#1-#2\relax{\message{#1+#2}}
+\def\ranges{}
+\def\newrange#1#2{
+  \edef\ranges{\ranges,#1+#2}
+}
+\def\split#1-#2{\newrange{#1}{#2}}
 \def\mysplit#1{\expandafter\split#1\relax}
 
-% negative version of loop to read lines from a file
-% (is it really this hard?)
-\def\nloop#1\repeat{\def\body{#1}\niterate}
-\def\niterate{\body \let\next\relax \else\let\next\niterate\fi \next}
+\message{Parsing fresh ranges...^^J}
+
+% Negative version of loop to read lines from a file.  Made it "long"
+% to allow \par in the conditional so we don't need to hide that in a
+% separate macro. (Is it really this hard?)
+\long\def\nloop#1\repeat{\def\body{#1}\niterate}
+\def\niterate{\body \let\next=\relax \else\let\next=\niterate\fi \next}
 \let\repeat=\fi % this makes \loop...\if...\repeat skippable
 
 % read to blank line
-\def\ifblank{\ifcat\par\fileline}
 \def\ifisnum#1{\ifcat1#1}
 \nloop
   \read\file to\fileline
-  \ifisnum\fileline\message{\fileline}\fi
-  \ifblank
+  \ifisnum\fileline\mysplit\fileline\fi
+  \ifcat\par\fileline % if the line is blank
 \repeat
 
-\message{nums}
+\message{Got these: \ranges^^J}
+\message{Parsing available ingredients...^^J}
 
 % read to end
-\def\ifblank{\ifcat\par\fileline}
 \nloop
   \read\file to\num
   \ifisnum\num
@@ -35,5 +42,8 @@
 \repeat
 
 \closein\file
+
+
+\message{^^J^^J}
 
 \end
