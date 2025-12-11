@@ -3,9 +3,10 @@ let
   #  nixpkgs = <nixpkgs>;
 
   # nixos-25.11 from 2025-11-30:
+  nixpkgs-version = "d542db7";
   nixpkgs = fetchTarball {
-    name = "nixpkgs";
-    url = "https://github.com/NixOS/nixpkgs/archive/d542db7.tar.gz";
+    name = "nixpkgs-${nixpkgs-version}";
+    url = "https://github.com/NixOS/nixpkgs/archive/${nixpkgs-version}.tar.gz";
     sha256 = "0x6wjmpzxrrlmwwq8v3znpyr1qs5m1vf9bdgwwlq0lr5fl8l4v67";
   };
 
@@ -27,6 +28,7 @@ in
       pkgs.octave
       pkgs.dosbox-x # for running GW-BASIC
       pkgs.texliveMinimal
+      pkgs.tcl-9_0
     ];
 
     # prevent nixpkgs from being garbage-collected
