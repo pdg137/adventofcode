@@ -29,6 +29,7 @@ in
       pkgs.dosbox-x # for running GW-BASIC
       pkgs.texliveMinimal
       pkgs.tcl-9_0
+      pkgs.sqlite
     ];
 
     # prevent nixpkgs from being garbage-collected
