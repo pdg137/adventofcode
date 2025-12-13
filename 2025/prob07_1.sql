@@ -9,12 +9,13 @@ INSERT INTO vars VALUES (
   (select length(v) from input where n=1)
   );
 
-WITH RECURSIVE output(prev, cur, n, x) as (
-  SELECT v, '', 1, 0 FROM input WHERE n=1
+WITH RECURSIVE output(prev, cur, n, x, hit) as (
+  SELECT v, '', 1, 0, 0 FROM input WHERE n=1
   UNION ALL
   -- input.v is the current row of the input data
   -- output.prev is the previous row of the output data
   -- output.cur is the current row of the output data, built up to char x-1
+  -- output.hit is true if there was a hit
   --
   SELECT
     if(x = cols+1, output.cur, output.prev),
@@ -40,9 +41,12 @@ WITH RECURSIVE output(prev, cur, n, x) as (
         )
       ),
     if(x = cols+1, output.n+1, output.n),
-    if(x = cols+1, 1, x+1) -- x = x+1
+    if(x = cols+1, 1, x+1), -- x = x+1
+    ('|' is SUBSTR(output.prev, x, 1)) AND ('^' is SUBSTR(input.v, x, 1)) -- hit?
     FROM input, output, vars
     WHERE input.n = output.n+1
     LIMIT (SELECT rows*cols FROM vars)
 )
-SELECT * FROM output WHERE x = (SELECT cols from vars) LIMIT 20;
+SELECT prev FROM output WHERE x = (SELECT cols from vars)
+UNION ALL
+SELECT SUM(hit) FROM output;
