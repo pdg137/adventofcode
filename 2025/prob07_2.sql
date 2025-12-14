@@ -9,27 +9,46 @@ INSERT INTO vars VALUES (
   (select length(v) from input where n=1)
   );
 
-CREATE TABLE dirs (dir INTEGER, dirname CHAR);
-INSERT INTO dirs values(-1, 'L');
-INSERT INTO dirs values(0, 'S');
-INSERT INTO dirs values(1, 'R');
-
-WITH RECURSIVE output(path, n, pos) as (
+WITH RECURSIVE output(prev, cur, n, x, total) as (
   -- input.v is the current row of the input data
-  -- output.path is the path followed, like LRLRR
-  -- output.n is the previous column of the tachyon
-  -- output.pos is the previous column of the tachyon
+  -- output.prev is the previous row of the output data
+  -- output.cur is the current row of the output data, built up to position x-1
+  -- output.n is the completed line
   --
-  SELECT '', 1, instr(input.v, 'S') FROM input WHERE n=1
-  UNION ALL
-
   SELECT
-    if('^' is substr(input.v, pos, 1), concat(output.path, dirname), output.path),
-    input.n,
-    if('^' is substr(input.v, pos, 1), pos + dir, pos)
-    FROM input, output, vars, dirs
-    WHERE input.n = output.n+1 AND
-      if('^' is substr(input.v, pos, 1), dir <> 0, dir = 0)
+    replace(replace(input.v, '.', format("%14d",0)), 'S', format("%14d",1)),
+    '', 1, 1, 0
+    FROM input WHERE n=1
+  UNION ALL
+  SELECT
+    IF(x = cols+1, output.cur, output.prev),
+    CONCAT(if(x = cols+1, '', output.cur),
+        -- compute the next number of the current line
+        IF(
+          x = cols + 1,
+          '',
+
+          -- if we are on ^, draw it
+          ('^' is SUBSTR(input.v, x, 1)),
+          ' ^^^^^^^^^^^^^',
+
+          --if last one was ^^, it's 0
+          (' ^^^^^^^^^^^^^' is SUBSTR(output.prev, 8*(x-1)+1, 8)),
+          format("%14d",0),
+
+          -- otherwise, compute a sum
+          format("%14d",
+            IF('^' is SUBSTR(input.v, x-1, 1), SUBSTR(output.prev, 14*(x-2)+1, 14), 0) + -- left
+            IF('^' is SUBSTR(input.v, x+1, 1), SUBSTR(output.prev, 14*(x)+1, 14), 0) + -- right
+            SUBSTR(output.prev, 14*(x-1)+1, 14) -- above
+          )
+        )
+      ),
+    if(x = cols+1, output.n+1, output.n),
+    if(x = cols+1, 1, x+1), -- x = x+1
+    if(x = cols+1, 0, output.total + substr(output.prev, 14*(x-1)+1, 14))
+    FROM input, output, vars
+    WHERE input.n = output.n+1
+
 )
--- SELECT * FROM output;
-SELECT COUNT(*) FROM output where n = (SELECT rows FROM vars);
+SELECT concat(cur, ' -> ', total, ' paths') FROM output where x=(select cols from vars)+1;
