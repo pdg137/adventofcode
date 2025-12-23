@@ -30,6 +30,7 @@ in
       pkgs.texliveMinimal
       pkgs.tcl-9_0
       pkgs.sqlite
+      pkgs.lua
     ];
 
     # prevent nixpkgs from being garbage-collected
