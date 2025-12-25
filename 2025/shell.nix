@@ -31,6 +31,7 @@ in
       pkgs.tcl-9_0
       pkgs.sqlite
       pkgs.lua
+      pkgs.bash
     ];
 
     # prevent nixpkgs from being garbage-collected
